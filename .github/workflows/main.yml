@@ -36,7 +36,7 @@ jobs:
 
     # 5️⃣ 上传生成的 AAR 作为 Artifact
     - name: Upload WebRTC AAR
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: webrtc-aar
         path: webrtc-builder/build/outputs/aar/*.aar
