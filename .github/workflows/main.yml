@@ -1,0 +1,42 @@
+name: Build WebRTC Android AAR
+
+on:
+  workflow_dispatch:  # 允许手动触发
+  push:
+    branches:
+      - main
+
+jobs:
+  build-aar:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1️⃣ 拉取你的仓库代码
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    # 2️⃣ 安装依赖（JDK / Gradle / Python / git）
+    - name: Setup dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y openjdk-11-jdk unzip python3 git wget curl
+
+    # 3️⃣ 下载 webrtc-android-builder 工具
+    - name: Clone WebRTC Android Builder
+      run: |
+        git clone https://github.com/bentleypark/webrtc-android-builder.git webrtc-builder
+        cd webrtc-builder
+        git checkout main
+
+    # 4️⃣ 编译 WebRTC AAR（使用默认参数）
+    - name: Build WebRTC AAR
+      run: |
+        cd webrtc-builder
+        ./gradlew assembleRelease
+
+    # 5️⃣ 上传生成的 AAR 作为 Artifact
+    - name: Upload WebRTC AAR
+      uses: actions/upload-artifact@v3
+      with:
+        name: webrtc-aar
+        path: webrtc-builder/build/outputs/aar/*.aar
